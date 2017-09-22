@@ -130,7 +130,9 @@ export { default as orientationMarkers } from './imageTools/orientationMarkers.j
 export { pan, panTouchDrag } from './imageTools/pan.js';
 export { default as panMultiTouch } from './imageTools/panMultiTouch.js';
 export { probe, probeTouch } from './imageTools/probe.js';
+export { probeLabel } from './imageTools/probeLabel.js';
 export { rectangleRoi, rectangleRoiTouch } from './imageTools/rectangleRoi.js';
+export { rectangleLabel } from './imageTools/rectangleLabel.js';
 export { rotate, rotateTouchDrag } from './imageTools/rotate.js';
 export { default as rotateTouch } from './imageTools/rotateTouch.js';
 export { default as saveAs } from './imageTools/saveAs.js';
