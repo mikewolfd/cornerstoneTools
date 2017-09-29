@@ -15,8 +15,9 @@ import toolCoordinates from '../stateManagement/toolCoordinates.js';
 import handleActivator from '../manipulators/handleActivator.js';
 
 const toolType = 'rectangleLabel';
-
+const save_freeze = false;
 // /////// BEGIN ACTIVE TOOL ///////
+
 function createNewMeasurement (mouseEventData) {
     // Create the measurement data for this tool with the end handle activated
   const measurementData = {
@@ -25,11 +26,11 @@ function createNewMeasurement (mouseEventData) {
     controls: {
       remove: {
         x: mouseEventData.currentPoints.image.x,
-        y: mouseEventData.currentPoints.image.y,
+        y: mouseEventData.currentPoints.image.y
       },
       save: {
         x: mouseEventData.currentPoints.image.x,
-        y: mouseEventData.currentPoints.image.y,
+        y: mouseEventData.currentPoints.image.y
       }
     },
     handles: {
@@ -85,8 +86,10 @@ function xyOnArc (handle, radius, radianAngle) {
   const x = handle.x + radius * Math.cos(radianAngles);
   const y = handle.y + radius * Math.sin(radianAngles);
 
-  return({ x,
-    y });
+  return ({
+    x,
+    y
+  });
 }
 
 function onImageRendered (e, eventData) {
@@ -206,11 +209,13 @@ function onImageRendered (e, eventData) {
       context.lineTo(stop.x, stop.y);
       context.stroke();
 
-        // If the tool configuration specifies to only draw the handles on hover / active,
-        // Follow this logic
+            // If the tool configuration specifies to only draw the handles on hover / active,
+            // Follow this logic
             // Draw the handles if the tool is active
-      if (data.save === false) {
-          drawHandles(context, eventData, data.handles, color);
+      if (save_freeze === false) {
+        drawHandles(context, eventData, data.handles, color);
+      } else if (data.save === false) {
+        drawHandles(context, eventData, data.handles, color);
       }
     }
 
@@ -331,7 +336,7 @@ function onImageRendered (e, eventData) {
   }
 }
 
-function getControlNearImagePoint( controls, coords, distanceThreshold ) {
+function getControlNearImagePoint (controls, coords, distanceThreshold) {
   let nearbyControl;
 
   if (!controls) {
@@ -352,24 +357,24 @@ function getControlNearImagePoint( controls, coords, distanceThreshold ) {
 
 function mouseMoveCallback (e, eventData) {
   toolCoordinates.setCoords(eventData);
-      // If a mouse button is down, do nothing
+    // If a mouse button is down, do nothing
   if (eventData.which !== 0) {
     return;
   }
 
-      // If we have no tool data for this element, do nothing
+    // If we have no tool data for this element, do nothing
   const toolData = getToolState(eventData.element, toolType);
 
   if (!toolData) {
     return;
   }
 
-      // We have tool data, search through all data
-      // And see if we can activate a handle
+    // We have tool data, search through all data
+    // And see if we can activate a handle
   let imageNeedsUpdate = false;
 
   for (let i = 0; i < toolData.data.length; i++) {
-          // Get the cursor position in canvas coordinates
+        // Get the cursor position in canvas coordinates
     const coords = eventData.currentPoints.canvas;
 
     const data = toolData.data[i];
@@ -384,7 +389,7 @@ function mouseMoveCallback (e, eventData) {
     }
   }
 
-      // Handle activation status changed, redraw the image
+    // Handle activation status changed, redraw the image
   if (imageNeedsUpdate === true) {
     cornerstone.updateImage(eventData.element);
   }
@@ -431,7 +436,7 @@ function mouseDownCallback (e, eventData) {
     const handle = getHandleNearImagePoint(element, data.handles, coords, distance);
     const control = getControlNearImagePoint(data.controls, coords, distance);
 
-    if (handle && data.save === false) {
+    if (handle && (data.save === false || save_freeze === false)) {
       $(element).off('CornerstoneToolsMouseMove', mouseMoveCallback);
       data.active = true;
       moveHandle(eventData, toolType, data, handle, handleDoneMove, options.preventHandleOutsideImage);
@@ -459,12 +464,11 @@ function mouseDownCallback (e, eventData) {
     }
   }
 
-      // Now check to see if there is a line we can move
-      // Now check to see if we have a tool that we can move
+    // Now check to see if there is a line we can move
+    // Now check to see if we have a tool that we can move
   if (!pointNearTool) {
     return;
   }
-
 
 
   for (i = 0; i < toolData.data.length; i++) {
