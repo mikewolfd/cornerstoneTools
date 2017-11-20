@@ -1,5 +1,4 @@
-import * as cornerstone from '../cornerstone-core.js';
-import * as cornerstoneMath from '../cornerstone-math.js';
+import { cornerstoneMath, external } from '../externalModules.js';
 import mouseButtonTool from './mouseButtonTool.js';
 import toolColors from '../stateManagement/toolColors.js';
 import textStyle from '../stateManagement/textStyle.js';
@@ -35,6 +34,7 @@ function createNewMeasurement (mouseEventData) {
 
 // /////// BEGIN IMAGE RENDERING ///////
 function pointNearTool (element, data, coords) {
+  const cornerstone = external.cornerstone;
   const endCanvas = cornerstone.pixelToCanvas(element, data.handles.end);
 
 
@@ -43,6 +43,7 @@ function pointNearTool (element, data, coords) {
 
 function onImageRendered (e, eventData) {
   // If we have no toolData for this element, return immediately as there is nothing to do
+  const cornerstone = external.cornerstone;
   const toolData = getToolState(e.currentTarget, toolType);
 
   if (!toolData) {
